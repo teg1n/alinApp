@@ -59,7 +59,7 @@ class ShareForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'rows': 3, 'maxlength': '150'}),  
         validators=[MaxLengthValidator(150, message="Maksimum 150 karakter girebilirsiniz!")]
     )
+    foto = forms.ImageField(required=False)
     class Meta:
         model = Share
-        fields = ['content']
-        
+        fields = ['content', 'foto']

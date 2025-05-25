@@ -42,12 +42,10 @@ def ui(request):
 
     all_sharings = models.Share.objects.filter(deleted=False).order_by('-created_at') 
     sharing_dict = {"showsharings": all_sharings}
-
     if request.method == 'POST':
-        form = ShareForm(request.POST)
+        form = ShareForm(request.POST, request.FILES)
         if form.is_valid():
             content = form.cleaned_data.get('content')
-
             if len(content) > 150:
                 form.add_error('content', 'Maksimum 150 karakter girebilirsiniz.')
             else:
@@ -55,19 +53,20 @@ def ui(request):
                 new_sharing.user = request.user
                 new_sharing.save()  
                 return redirect('/')  
-
     else:
         form = ShareForm()
-
     sharing_dict['form'] = form  
     return render(request, 'sharingApp/home.html', context=sharing_dict)
 
 @login_required
 def share_form(request):
     if request.method == 'POST':
-        content = request.POST.get('content')
-        Share.objects.create(user=request.user, content=content)
-        return redirect('/') 
+        form = ShareForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_sharing = form.save(commit=False)
+            new_sharing.user = request.user
+            new_sharing.save()
+            return redirect('/')
     return redirect('/')
     
 def register(request):
@@ -96,3 +95,4 @@ def deletetext(request,id):
         messages.error(request,"Bir sorun oluştu")
     
     return redirect('sharingApp:ui')
+

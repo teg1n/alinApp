@@ -143,7 +143,6 @@
 
   <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
-      <img src="{% static 'sharingApp/logo_transparent.png'%}" alt="Logo" width="5%" height="5%" class="d-inline-block align-text-top" id="alincilogo">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -158,7 +157,6 @@
     </div>
   </nav>
 
-  <!-- Modal -->
 <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -167,13 +165,16 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-              <!-- Burada Formu Modal içine yerleştiriyoruz -->
-              <form action="{% url 'sharingApp:share' %}" method="POST">
+              <form action="{% url 'sharingApp:share' %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
                   <div class="mb-3">
                       <label for="content" class="form-label">İçerik</label>
                       <textarea class="form-control" id="content" maxlength="150" oninput="karakterSay()" name="content" rows="3" required></textarea>
                       <p><span id="sayac">150</span> karakter kaldı</p>
+                  </div>
+                  <div class="mb-3">
+                      <label for="foto" class="form-label">Fotoğraf (isteğe bağlı)</label>
+                      <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
                   </div>
                   <button type="submit" class="btn btn-primary">Gönder</button>
               </form>
@@ -184,7 +185,6 @@
     
     
 
-    <!-- Paylaşımlar -->
     <div class="mt-4">
       {% for sharing in showsharings %}
           <div class="card mb-3" style="margin-top: 3%; margin-inline: 20%;">
@@ -194,6 +194,24 @@
                       <p class="card-text">
                           {{ sharing.content }}
                       </p>
+                      {% if sharing.foto %}
+    <div class="image-container" style="margin-top: 10px; text-align: center;">
+        <img src="{{ sharing.foto.url }}" alt="Paylaşım Fotoğrafı" class="img-thumbnail sharing-image" style="max-width: 180px; max-height: 180px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; transition: transform 0.2s;" data-bs-toggle="modal" data-bs-target="#imageModal{{ sharing.id }}" />
+    </div>
+    <!-- Modal for image preview -->
+    <div class="modal fade" id="imageModal{{ sharing.id }}" tabindex="-1" aria-labelledby="imageModalLabel{{ sharing.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark">
+          <div class="modal-header border-0">
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+            <img src="{{ sharing.foto.url }}" alt="Paylaşım Fotoğrafı" style="max-width: 90vw; max-height: 70vh; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.4);" />
+          </div>
+        </div>
+      </div>
+    </div>
+                      {% endif %}
                       <footer class="blockquote-footer">{{ sharing.created_at }}</footer>
                   </div>
                   
@@ -223,7 +241,6 @@
         </div>
     </div>
     <script>
-        // Modal'ı sayfa yüklendikten sonra otomatik olarak göster
         var myModal = new bootstrap.Modal(document.getElementById('noContentModal'), {
             keyboard: false
         });
@@ -233,7 +250,7 @@
   </div>
   
 
-  <!-- Silinen Mesajlar İçin Modal -->
+
   <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -242,7 +259,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="modalBody">
-          <!-- Mesaj burada dinamik olarak değişecek -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>

@@ -27,7 +27,6 @@
 
     
     <div class="card shadow-lg p-4">
-        <img src="{% static 'sharingApp/logo_transparent.png'%}" class="card-img-top d-block mx-auto" alt="Login Logo" style="width: 290px; height: auto;">
         <h3 class="text-center">Giriş Yap</h3>
         <form method="POST">
             {% csrf_token %}
@@ -59,7 +58,6 @@
                 document.querySelector("#id_password").classList.add("form-control");
             });
         </script>
-        <!-- Kayıt Ol Butonu -->
         <div class="text-center mt-3">
             <p>Hesabın yok mu? <a href="{% url 'sharingApp:signup' %}" class="btn btn-outline-secondary">Kayıt Ol</a></p>
         </div>
